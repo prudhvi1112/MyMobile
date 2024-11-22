@@ -80,4 +80,9 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>("An unexpected error occurred: " + ex.getMessage(),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<String>handlePasswordIncorrectException(Exception ex){
+		return new ResponseEntity<>("wrong password",HttpStatus.NOT_FOUND);
+	}
 }
