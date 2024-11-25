@@ -1,5 +1,6 @@
 package com.mymobile.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -40,9 +41,12 @@ public class Product {
 
 	@NotNull
 	private String model;
+	
+	 @Column( columnDefinition = "LONGTEXT" )
+	 private String imageOfProduct;
 
-	@Lob 
-	private byte[] imageOfProduct;
+//	@Lob 
+//	private byte[] imageOfProduct;
 
 	@Size(min = 1, max = 1000)
 	private String productFeatures;

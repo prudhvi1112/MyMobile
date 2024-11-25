@@ -65,7 +65,6 @@ public class UserData
 	    private String userPanNumber;
 
 	    @NotNull(message = "GST Number cannot be null")
-	    @Pattern(regexp = "^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[Z]{1}[A-Z0-9]{1}$", message = "Invalid GST number format")
 	    private String userGstNumber;
 
 	    

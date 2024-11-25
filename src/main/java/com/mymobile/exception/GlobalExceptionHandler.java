@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -26,12 +25,25 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<String> handleProductsNotFound(ProductsNotFoundException ex) {
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
 	}
-	
+
+	@ExceptionHandler(PasswordAndConfirmPasswordException.class)
+	public ResponseEntity<String> handlePasswordAndConfirmPassword(PasswordAndConfirmPasswordException ex) {
+		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(InvalidUserNameOrPasswordException.class)
+	public ResponseEntity<Map<String, String>> handleInvalidUserNameOrPassword(InvalidUserNameOrPasswordException ex) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("userid", "Invalid UserId Or Password");
+		map.put("userPassword", "Invalid UserId Or Password");
+		return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+	}
+
 	@ExceptionHandler(InvaildUserException.class)
 	public ResponseEntity<String> handleInvaildUserException(InvaildUserException ex) {
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
 	}
-	
+
 	@ExceptionHandler(InvaildUserToAddProductException.class)
 	public ResponseEntity<String> handleInvaildUserToAddProduct(InvaildUserToAddProductException ex) {
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
@@ -41,26 +53,26 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex) {
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
 	}
-	
+
 	@ExceptionHandler(UserIdOrEmailAlreadyExistsException.class)
 	public ResponseEntity<String> handleUserIdOrEmailAlreadyExists(UserIdOrEmailAlreadyExistsException ex) {
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 	}
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
+	public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+		Map<String, String> errors = new HashMap<>();
 
-        // Loop through all the field errors and add them to the error map
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
+		// Loop through all the field errors and add them to the error map
+		ex.getBindingResult().getAllErrors().forEach((error) -> {
+			String fieldName = ((FieldError) error).getField();
+			String errorMessage = error.getDefaultMessage();
+			errors.put(fieldName, errorMessage);
+		});
 
-        // Return the response entity with the validation error messages
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-    }
-
+		// Return the response entity with the validation error messages
+		return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+	}
 
 //	@ExceptionHandler(ConstraintViolationException.class)
 //	public ResponseEntity<Map<String, String>> handleConstraintViolation(ConstraintViolationException ex) {
@@ -82,7 +94,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<String>handlePasswordIncorrectException(Exception ex){
-		return new ResponseEntity<>("wrong password",HttpStatus.NOT_FOUND);
+	public ResponseEntity<String> handlePasswordIncorrectException(Exception ex) {
+		return new ResponseEntity<>("wrong password", HttpStatus.NOT_FOUND);
 	}
 }

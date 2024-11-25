@@ -4,8 +4,12 @@ import jakarta.persistence.*;
 import java.util.List;
 @Entity
 public class Cart {
+	
+	
     @Id
     private String cartId;
+    
+    
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "cart_id")
     private List<Product> productList;

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mymobile.dto.UserAddedResponse;
 import com.mymobile.dto.UserDataDto;
 import com.mymobile.entity.UserData;
+import com.mymobile.exception.PasswordAndConfirmPasswordException;
 import com.mymobile.exception.UserIdOrEmailAlreadyExistsException;
 import com.mymobile.repo.UserDetailsDao;
 
@@ -24,6 +25,8 @@ public class UserRegisterService {
 
 	@Transactional
 	public UserAddedResponse addUser(UserDataDto userDataDto) {
+		
+		if(userDataDto.getUserPassword().equals(userDataDto.getUserConfirmPassword())) {
 		UserData userData = mapper.map(userDataDto, UserData.class);
 		UserData userEmail = userDetailsDao.findByUserEmail(userData.getUserEmail());
 		
@@ -38,6 +41,11 @@ public class UserRegisterService {
 			return response;
 		} else {
 			throw new UserIdOrEmailAlreadyExistsException("User Id Or Email Already Exist");
+		}
+		}
+		else
+		{
+			throw new PasswordAndConfirmPasswordException("Password And Confirm Must Be Same");
 		}
 	}
 

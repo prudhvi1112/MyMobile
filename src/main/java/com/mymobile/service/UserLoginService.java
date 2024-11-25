@@ -1,43 +1,42 @@
 package com.mymobile.service;
 
-
-import com.mymobile.dto.UserDataDto;
+import com.mymobile.dto.LoginRequest;
+import com.mymobile.dto.LoginResponse;
 import com.mymobile.entity.UserData;
-import com.mymobile.exception.PasswordIncorrectException;
-import com.mymobile.exception.UserIdOrEmailAlreadyExistsException;
+import com.mymobile.exception.InvaildUserException;
+import com.mymobile.exception.InvalidUserNameOrPasswordException;
 import com.mymobile.repo.UserDetailsDao;
-import com.mymobile.util.UserLoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 
-import javax.swing.text.html.Option;
-import java.util.Base64;
-import java.util.Optional;
 
 @Service
 public class UserLoginService {
-    @Autowired
-    private UserDetailsDao userDetailsDao;
 
+	@Autowired
+	private UserDetailsDao userDetailsDao;
 
+	public LoginResponse loginCheck(LoginRequest request) {
 
-    public ResponseEntity login(String userId, String userPassword){
+		UserData userData = userDetailsDao.findById(request.getUserId())
+				.orElseThrow(() -> new InvaildUserException("No User Found With Id : " + request.getUserId()));
 
-        Optional<UserData> db= userDetailsDao.findById(userId);
+		if (userData.getUserId().equals(request.getUserId())
+				&& userData.getUserPassword().equals(request.getUserPassword())) {
+			LoginResponse response = new LoginResponse();
+			response.setUserId(userData.getUserId());
+			response.setUserRole(userData.getUserRole());
+			response.setUserName(userData.getUserName());
+			response.setLoginTime(LocalDateTime.now());
+			return response;
 
-        if(db!=null){
-            String  encodedInputPassword = Base64.getEncoder().encodeToString(userPassword.getBytes());
-            if(db.get().getUserPassword().equals(encodedInputPassword)){
-                UserLoginResponse responseDTO = new UserLoginResponse();
-                responseDTO.setUserId(db.get().getUserId());
-                responseDTO.setUserRegsiterDate(db.get().getUserRegsiterDate());
-                responseDTO.setUserRegsiterDate(db.get().getUserLastLoginIn());
-                return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-            }
-            throw new PasswordIncorrectException("password incorrect");
-        }
-        throw new UserIdOrEmailAlreadyExistsException("user incorrect");
-    }
+		} else {
+
+			throw new InvalidUserNameOrPasswordException("Invalid UserName Or Password");
+
+		}
+
+	}
+
 }
