@@ -54,13 +54,10 @@ public class UserDataDto
     @NotNull(message = "Pincode cannot be null")
     private Integer userPincode;
 
-    @NotNull(message = "Register Date cannot be null")
-    private LocalDateTime userRegsiterDate;
-
-    private LocalDateTime userLastLoginIn;
+   
 
     @NotNull(message = "PAN Number cannot be null")
-    @Size(min = 8, max = 15, message = "Password must be between 8 and 15 characters")
+    @Size(max = 10, message = "Password must be between 8 and 15 characters")
     private String userPanNumber;
 
     @NotNull(message = "GST Number cannot be null")

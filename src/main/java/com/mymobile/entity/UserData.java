@@ -61,7 +61,7 @@ public class UserData
 	    private LocalDateTime userLastLoginIn;
 
 	    @NotNull(message = "PAN Number cannot be null")
-	    @Pattern(regexp = "^[A-Z]{5}[0-9]{4}[A-Z]{1}$", message = "Invalid PAN number format")
+	    @Pattern(regexp = "^[A-Za-z0-9]{10}$", message = "Invalid input. The value must be 10 alphanumeric characters.")
 	    private String userPanNumber;
 
 	    @NotNull(message = "GST Number cannot be null")
