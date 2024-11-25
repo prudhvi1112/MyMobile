@@ -1,6 +1,9 @@
 package com.mymobile.exception;
 
 import java.util.HashMap;
+
+
+
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -10,88 +13,198 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
+
+
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler(ProductAlreadyExistsException.class)
-	public ResponseEntity<String> handleProductAlreadyExists(ProductAlreadyExistsException ex) {
-		return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-	}
 
-	@ExceptionHandler(ProductsNotFoundException.class)
-	public ResponseEntity<String> handleProductsNotFound(ProductsNotFoundException ex) {
-		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-	}
+    @ExceptionHandler(ProductAlreadyExistsException.class)
+    public ResponseEntity<Response<Map<String, String>>> handleProductAlreadyExists(ProductAlreadyExistsException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("productId", ex.getMessage());
+        Response<Map<String, String>> response = new Response<>(error, "Product already exists", HttpStatus.BAD_REQUEST.name());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
-	@ExceptionHandler(PasswordAndConfirmPasswordException.class)
-	public ResponseEntity<String> handlePasswordAndConfirmPassword(PasswordAndConfirmPasswordException ex) {
-		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-	}
+   
+    @ExceptionHandler(ProductsNotFoundException.class)
+    public ResponseEntity<Response<String>> handleProductsNotFound(ProductsNotFoundException ex) {
+        Response<String> response = new Response<>(ex.getMessage(), "Products not found", HttpStatus.NOT_FOUND.name());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 
-	@ExceptionHandler(InvalidUserNameOrPasswordException.class)
-	public ResponseEntity<Map<String, String>> handleInvalidUserNameOrPassword(InvalidUserNameOrPasswordException ex) {
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("userid", "Invalid UserId Or Password");
-		map.put("userPassword", "Invalid UserId Or Password");
-		return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
-	}
+    
+    @ExceptionHandler(PasswordAndConfirmPasswordException.class)
+    public ResponseEntity<Response<String>> handlePasswordAndConfirmPassword(PasswordAndConfirmPasswordException ex) {
+        Response<String> response = new Response<>(ex.getMessage(), "Password mismatch", HttpStatus.NOT_FOUND.name());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 
-	@ExceptionHandler(InvaildUserException.class)
-	public ResponseEntity<String> handleInvaildUserException(InvaildUserException ex) {
-		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-	}
+    
+    @ExceptionHandler(InvalidUserNameOrPasswordException.class)
+    public ResponseEntity<Response<Map<String, String>>> handleInvalidUserNameOrPassword(InvalidUserNameOrPasswordException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("userid", "Invalid UserId Or Password");
+        map.put("userPassword", "Invalid UserId Or Password");
+        Response<Map<String, String>> response = new Response<>(map, "Invalid credentials", HttpStatus.NOT_FOUND.name());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 
-	@ExceptionHandler(InvaildUserToAddProductException.class)
-	public ResponseEntity<String> handleInvaildUserToAddProduct(InvaildUserToAddProductException ex) {
-		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-	}
+ 
+    @ExceptionHandler(InvaildUserException.class)
+    public ResponseEntity<Response<Map<String, String>>> handleInvaildUserException(InvaildUserException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("userId", ex.getMessage());
+        Response<Map<String, String>> response = new Response<>(map, "Invalid user", HttpStatus.NOT_FOUND.name());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 
-	@ExceptionHandler(UserNotFoundException.class)
-	public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex) {
-		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-	}
+   
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Response<String>> handleUserNotFound(UserNotFoundException ex) {
+        Response<String> response = new Response<>(ex.getMessage(), "User not found", HttpStatus.NOT_FOUND.name());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 
-	@ExceptionHandler(UserIdOrEmailAlreadyExistsException.class)
-	public ResponseEntity<String> handleUserIdOrEmailAlreadyExists(UserIdOrEmailAlreadyExistsException ex) {
-		return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-	}
+    
+    @ExceptionHandler(UserIdOrEmailAlreadyExistsException.class)
+    public ResponseEntity<Response<Map<String, String>>> handleUserIdOrEmailAlreadyExists(UserIdOrEmailAlreadyExistsException ex) {
+        Response<Map<String, String>> response = new Response<>(ex.getErrors(), "UserId or Email already exists", HttpStatus.BAD_REQUEST.name());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-		Map<String, String> errors = new HashMap<>();
+    
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Response<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
 
-		// Loop through all the field errors and add them to the error map
-		ex.getBindingResult().getAllErrors().forEach((error) -> {
-			String fieldName = ((FieldError) error).getField();
-			String errorMessage = error.getDefaultMessage();
-			errors.put(fieldName, errorMessage);
-		});
+        Response<Map<String, String>> response = new Response<>(errors, "Validation errors", HttpStatus.BAD_REQUEST.name());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
-		// Return the response entity with the validation error messages
-		return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-	}
+   
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Response<String>> handleGenericException(Exception ex) {
+        Response<String> response = new Response<>("An unexpected error occurred: " + ex.getMessage(), "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR.name());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
 
-//	@ExceptionHandler(ConstraintViolationException.class)
-//	public ResponseEntity<Map<String, String>> handleConstraintViolation(ConstraintViolationException ex) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//@RestControllerAdvice
+//public class GlobalExceptionHandler {
+//
+//	@ExceptionHandler(ProductAlreadyExistsException.class)
+//	public ResponseEntity<Map<String, String>> handleProductAlreadyExists(ProductAlreadyExistsException ex) {
+//		Map<String, String> error = new HashMap<String, String>();
+//		error.put("productId", ex.getMessage());
+//		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+//	}
+//
+//	@ExceptionHandler(ProductsNotFoundException.class)
+//	public ResponseEntity<String> handleProductsNotFound(ProductsNotFoundException ex) {
+//		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+//	}
+//
+//	@ExceptionHandler(PasswordAndConfirmPasswordException.class)
+//	public ResponseEntity<String> handlePasswordAndConfirmPassword(PasswordAndConfirmPasswordException ex) {
+//		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+//	}
+//
+//	@ExceptionHandler(InvalidUserNameOrPasswordException.class)
+//	public ResponseEntity<Map<String, String>> handleInvalidUserNameOrPassword(InvalidUserNameOrPasswordException ex) {
+//		Map<String, String> map = new HashMap<String, String>();
+//		map.put("userid", "Invalid UserId Or Password");
+//		map.put("userPassword", "Invalid UserId Or Password");
+//		return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+//	}
+//
+//	@ExceptionHandler(InvaildUserException.class)
+//	public ResponseEntity<Map<String, String>> handleInvaildUserException(InvaildUserException ex)
+//	{
+//		Map<String, String> map = new HashMap<String, String>();
+//		map.put("userId", ex.getMessage());
+//		
+//		return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+//	}
+//
+//	@ExceptionHandler(InvaildUserToAddProductException.class)
+//	public ResponseEntity<String> handleInvaildUserToAddProduct(InvaildUserToAddProductException ex) {
+//		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+//	}
+//
+//	@ExceptionHandler(UserNotFoundException.class)
+//	public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex) {
+//		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+//	}
+//
+//	@ExceptionHandler(UserIdOrEmailAlreadyExistsException.class)
+//	public ResponseEntity<Map<String, String>> handleUserIdOrEmailAlreadyExists(
+//			UserIdOrEmailAlreadyExistsException ex) {
+//
+//		return new ResponseEntity<>(ex.getErrors(), HttpStatus.BAD_REQUEST);
+//	}
+//
+//	@ExceptionHandler(MethodArgumentNotValidException.class)
+//	public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
 //		Map<String, String> errors = new HashMap<>();
 //
-//		for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-//			String propertyPath = violation.getPropertyPath().toString();
-//			String errorMessage = violation.getMessage();
-//			errors.put(propertyPath, errorMessage);
-//		}
+//		// Loop through all the field errors and add them to the error map
+//		ex.getBindingResult().getAllErrors().forEach((error) -> {
+//			String fieldName = ((FieldError) error).getField();
+//			String errorMessage = error.getDefaultMessage();
+//			errors.put(fieldName, errorMessage);
+//		});
 //
-//		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+//		// Return the response entity with the validation error messages
+//		return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
 //	}
-
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<String> handleGenericException(Exception ex) {
-		return new ResponseEntity<>("An unexpected error occurred: " + ex.getMessage(),
-				HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-
-	
-}
+//
+////	@ExceptionHandler(ConstraintViolationException.class)
+////	public ResponseEntity<Map<String, String>> handleConstraintViolation(ConstraintViolationException ex) {
+////		Map<String, String> errors = new HashMap<>();
+////
+////		for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+////			String propertyPath = violation.getPropertyPath().toString();
+////			String errorMessage = violation.getMessage();
+////			errors.put(propertyPath, errorMessage);
+////		}
+////
+////		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+////	}
+//
+//	@ExceptionHandler(Exception.class)
+//	public ResponseEntity<String> handleGenericException(Exception ex) {
+//		return new ResponseEntity<>("An unexpected error occurred: " + ex.getMessage(),
+//				HttpStatus.INTERNAL_SERVER_ERROR);
+//	}
+//
+//}

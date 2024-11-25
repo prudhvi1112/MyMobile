@@ -32,7 +32,7 @@ public class VendorController {
 	}
 
 	@GetMapping({ "/products", "/vendor/products/{vendorId}" })
-	public ResponseEntity<List<ProductsDto>> getProducts(@PathVariable(required = false) String vendorId) {
+	public ResponseEntity<?> getProducts(@PathVariable(required = false) String vendorId) {
 		return new ResponseEntity<>(vendorService.getProductsList(vendorId), HttpStatus.OK);
 	}
 

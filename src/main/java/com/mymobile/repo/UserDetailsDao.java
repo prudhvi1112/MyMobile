@@ -9,6 +9,10 @@ public interface UserDetailsDao extends JpaRepository<UserData, String>
 {
 	
 	UserData findByUserEmail(String userEmail);
+	
+	boolean existsByUserEmail(String userEmail);
+	
+	boolean existsByUserId(String userId);
 
 
 }

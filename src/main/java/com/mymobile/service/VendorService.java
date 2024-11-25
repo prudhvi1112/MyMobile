@@ -65,7 +65,7 @@ public class VendorService {
 		}
 	}
 
-	public List<ProductsDto> getProductsList(String vendorId) {
+	public Object getProductsList(String vendorId) {
 		if (vendorId == null) {
 			List<Product> productList = productDao.findAll();
 			return productList.stream().map(product -> mapper.map(product, ProductsDto.class))
@@ -73,7 +73,10 @@ public class VendorService {
 		} else {
 			List<Product> productListByVendoeId = productDao.findByUserData_UserId(vendorId);
 			if (productListByVendoeId.isEmpty()) {
-				throw new InvaildUserException("Invalid user or no products included.");
+				String response ="No Products Found For Vendor : "+vendorId;
+				
+				return response;
+				//throw new InvaildUserException("Invalid user or no products included.");
 			}
 			return productListByVendoeId.stream().map(product -> mapper.map(product, ProductsDto.class))
 					.collect(Collectors.toList());
