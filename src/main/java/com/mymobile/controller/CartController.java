@@ -1,33 +1,35 @@
 package com.mymobile.controller;
 
-import com.mymobile.entity.Cart;
-import com.mymobile.service.CartService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.mymobile.entity.Cart;
+import com.mymobile.service.CartService;
+
 @RestController
-@RequestMapping("/api/carts")
+@RequestMapping("/cart")
 public class CartController {
 
-    private final CartService cartService;
+    @Autowired
+    private CartService cartService;
 
-    public CartController(CartService cartService) {
 
-        this.cartService = cartService;
+
+    @GetMapping("/{customerId}")
+    public  ResponseEntity<Cart> getCart(@PathVariable String customerId) {
+         return new ResponseEntity<Cart>(cartService.getCart(customerId), HttpStatus.OK);
     }
-    @PostMapping
-    public ResponseEntity<Cart> addCart(@RequestBody Cart cart){
-        Cart savedcart= cartService.saveCart(cart);
-        return new ResponseEntity(savedcart,HttpStatus.OK);
-    }
-    @GetMapping("/{cartId}")
-    public  ResponseEntity<Cart> getCart(@PathVariable String cartId){
-        Cart cart = cartService.getCartById(cartId);
-        if (cart != null) {
-            return ResponseEntity.ok(cart);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    
+    
+    @PostMapping("/{customerId}/products/{productId}")
+    public ResponseEntity<Cart> addToCart(
+            @PathVariable String customerId,
+            @PathVariable String productId,
+            @RequestParam Integer quantity) {
+    	
+    	cartService.addToCart(customerId, productId, quantity);
+        return new ResponseEntity<Cart>(HttpStatus.OK);
     }
 }
