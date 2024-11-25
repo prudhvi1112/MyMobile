@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,9 @@ public class UserRegisterService {
 
 	@Autowired
 	private ModelMapper mapper;
+	
+	@Autowired
+	private BCryptPasswordEncoder encoder;
 
 	@Transactional
 	public UserAddedResponse addUser(UserDataDto userDataDto) {
@@ -32,7 +36,12 @@ public class UserRegisterService {
 		
 		
 		UserData userDetails = userDetailsDao.findById(userData.getUserId()).orElse(null);
+		System.out.println(userDetails);
 		if (userEmail == null && userDetails == null) {
+			
+			userData.setUserPassword(encoder.encode(userDataDto.getUserPassword()));
+			userData.setUserConfirmPassword(encoder.encode(userDataDto.getUserConfirmPassword()));
+			
 			
 			userData.setUserRegsiterDate(LocalDateTime.now());
 			userData.setUserLastLoginIn(LocalDateTime.now());

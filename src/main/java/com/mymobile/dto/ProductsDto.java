@@ -19,7 +19,7 @@ public class ProductsDto
 
 	private String model;
 
-	private byte[] imageOfProduct;
+	 private String imageOfProduct;
 
 	private String productFeatures;
 

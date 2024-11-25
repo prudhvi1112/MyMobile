@@ -40,8 +40,9 @@ public class ProductDto {
 	@NotNull
 	private String model;
 
-	@Lob 
-	private byte[] imageOfProduct;
+//	@Lob 
+//	private byte[] imageOfProduct;
+	 private String imageOfProduct;
 
 	@Size(min = 1, max = 1000)
 	private String productFeatures;

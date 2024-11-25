@@ -10,6 +10,7 @@ import com.mymobile.service.CartService;
 
 @RestController
 @RequestMapping("/cart")
+@CrossOrigin("*")
 public class CartController {
 
     @Autowired

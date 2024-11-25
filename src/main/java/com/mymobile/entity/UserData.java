@@ -29,13 +29,13 @@ public class UserData
 	    private String userName;
 
 	    @NotNull(message = "Password cannot be null")
-	    @Size(min = 8, max = 15, message = "Password must be between 8 and 15 characters")
-	    @Pattern(regexp = "^(?=.*[0-9])(?=.*[@#%$&])[a-zA-Z0-9@#%$&]+$", message = "User ID must be alphanumeric and contain at least one special character (@, #, %, $, &) and one digit.")
+	   // @Size(min = 8, max = 15, message = "Password must be between 8 and 15 characters")
+//	    @Pattern(regexp = "^(?=.*[0-9])(?=.*[@#%$&])[a-zA-Z0-9@#%$&]+$", message = "User ID must be alphanumeric and contain at least one special character (@, #, %, $, &) and one digit.")
 	    private String userPassword;
 
 	    @NotNull(message = "Confirm Password cannot be null")
-	    @Size(min = 8, max = 15, message = "Password must be between 8 and 15 characters")
-	    @Pattern(regexp = "^(?=.*[0-9])(?=.*[@#%$&])[a-zA-Z0-9@#%$&]+$", message = "User ID must be alphanumeric and contain at least one special character (@, #, %, $, &) and one digit.")
+	   // @Size(min = 8, max = 15, message = "Password must be between 8 and 15 characters")
+	  //  @Pattern(regexp = "^(?=.*[0-9])(?=.*[@#%$&])[a-zA-Z0-9@#%$&]+$", message = "User ID must be alphanumeric and contain at least one special character (@, #, %, $, &) and one digit.")
 	    private String userConfirmPassword;
 
 	    @NotNull(message = "Address cannot be null")

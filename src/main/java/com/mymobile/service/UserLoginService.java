@@ -7,6 +7,7 @@ import com.mymobile.exception.InvaildUserException;
 import com.mymobile.exception.InvalidUserNameOrPasswordException;
 import com.mymobile.repo.UserDetailsDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
@@ -16,14 +17,19 @@ public class UserLoginService {
 
 	@Autowired
 	private UserDetailsDao userDetailsDao;
+	
+	@Autowired
+	private BCryptPasswordEncoder encoder;
 
 	public LoginResponse loginCheck(LoginRequest request) {
 
 		UserData userData = userDetailsDao.findById(request.getUserId())
 				.orElseThrow(() -> new InvaildUserException("No User Found With Id : " + request.getUserId()));
 
+		
+		
 		if (userData.getUserId().equals(request.getUserId())
-				&& userData.getUserPassword().equals(request.getUserPassword())) {
+				&& encoder.matches(request.getUserPassword(), userData.getUserPassword())) {
 			LoginResponse response = new LoginResponse();
 			response.setUserId(userData.getUserId());
 			response.setUserRole(userData.getUserRole());

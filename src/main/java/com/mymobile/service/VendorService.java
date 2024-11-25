@@ -37,7 +37,7 @@ public class VendorService {
 
 		UserData userData = userDetailsDao.findById(productDto.getVendorId())
 				.orElseThrow(() -> new UserNotFoundException("Vendor Not Found With Id : " + productDto.getVendorId()));
-		if (userData.getUserRole().equals("vendor")) {
+		if (userData.getUserRole().equalsIgnoreCase("vendor")) {
 			Product product = mapper.map(productDto, Product.class);
 			Product findProduct = productDao.findById(product.getProductId()).orElse(null);
 			if (findProduct == null) {
