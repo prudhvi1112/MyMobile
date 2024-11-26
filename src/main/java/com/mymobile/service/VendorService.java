@@ -47,21 +47,21 @@ public class VendorService {
 
 				List<Product> productList = userData.getProducts();
 				if (productList.contains(product)) {
-					throw new ProductAlreadyExistsException("Product Already Exists");
+					throw new ProductAlreadyExistsException("Product Already Exists "+product.getProductId());
 				} else {
 					productList.add(product);
 					userData.setProducts(productList);
 					userDetailsDao.save(userData);
 					ProductAddedResponse response = new ProductAddedResponse();
 					response.setProductId(product.getProductId());
-					response.setSuccessMessage("Product Added Successfully");
+					response.setSuccessMessage("Product Added Successfully With Id "+product.getProductId());
 					return response;
 				}
 			} else {
-				throw new ProductAlreadyExistsException("Product Already Exists");
+				throw new ProductAlreadyExistsException("Product Already Exists "+product.getProductId());
 			}
 		} else {
-			throw new InvaildUserToAddProductException("Invalid User To Add Products");
+			throw new InvaildUserToAddProductException("Invalid User To Add Products "+ productDto.getVendorId());
 		}
 	}
 

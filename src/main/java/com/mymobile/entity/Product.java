@@ -26,7 +26,7 @@ public class Product {
 	private String productId;
 
 	@NotNull
-	@Size(min = 1, max = 500)
+	@Size(min = 1, max = 5000)
 	private String description;
 
 	@NotNull
@@ -52,7 +52,7 @@ public class Product {
 //	@Lob 
 //	private byte[] imageOfProduct;
 
-	@Size(min = 1, max = 1000)
+	@Size(min = 1, max = 10000)
 	private String productFeatures;
 	
 	@ManyToOne

@@ -20,7 +20,7 @@ public class ProductDto {
 	private String productId;
 
 	@NotNull
-	@Size(min = 1, max = 500)
+	@Size(min = 1, max = 5000)
 	private String description;
 
 	@NotNull
@@ -44,7 +44,7 @@ public class ProductDto {
 //	private byte[] imageOfProduct;
 	 private String imageOfProduct;
 
-	@Size(min = 1, max = 1000)
+	@Size(min = 1, max = 10000)
 	private String productFeatures;
 	
 

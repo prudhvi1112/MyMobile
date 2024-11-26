@@ -1,9 +1,9 @@
 package com.mymobile.service;
 
-
 import com.mymobile.entity.Cart;
 import com.mymobile.entity.Product;
 import com.mymobile.entity.UserData;
+import com.mymobile.exception.CartNotFoundException;
 import com.mymobile.exception.InvaildUserException;
 import com.mymobile.exception.ProductOutOfStockException;
 import com.mymobile.exception.ProductsNotFoundException;
@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
-
 
 @Service
 public class CartService {
@@ -77,6 +76,27 @@ public class CartService {
 		}
 		cart = cartRepository.save(cart);
 		return cart;
+	}
+
+	@Transactional
+	public boolean removeProductFromCart(String userId, String productId) {
+
+		UserData user = userDetailsDao.findById(userId)
+				.orElseThrow(() -> new InvaildUserException("User not found with Id " + userId));
+
+		Cart cart = cartRepository.findByUserData(user);
+		if (cart == null) {
+			throw new CartNotFoundException("Cart not found for userId : " + userId);
+		}
+
+		Product product = productRepository.findById(productId)
+				.orElseThrow(() -> new ProductsNotFoundException("Product not found with Id : " + productId));
+
+		cart.getProducts().remove(product);
+
+		cartRepository.save(cart);
+
+		return true;
 	}
 
 }
