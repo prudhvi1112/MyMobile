@@ -11,5 +11,6 @@ import com.mymobile.entity.Product;
 public interface ProductDao extends JpaRepository<Product, String> {
 
 	List<Product> findByUserData_UserId(String vendorId);
+	 Product findByProductIdAndUserDataUserId(String productId, String userId);
 
 }

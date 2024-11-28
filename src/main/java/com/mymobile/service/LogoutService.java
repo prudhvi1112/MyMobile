@@ -19,7 +19,7 @@ public class LogoutService {
 
 		UserData user = userDetailsDao.findById(userId)
 				.orElseThrow(() -> new InvaildUserException("User Not Found With Id : " + userId));
-		
+
 		LocalDateTime localDateTime = LocalDateTime.now();
 		user.setUserLastLoginIn(localDateTime);
 		userDetailsDao.save(user);

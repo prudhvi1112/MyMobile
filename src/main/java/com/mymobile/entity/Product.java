@@ -2,6 +2,9 @@ package com.mymobile.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -57,10 +60,12 @@ public class Product {
 	
 	@ManyToOne
 	@JoinColumn(name = "user_id", referencedColumnName = "userId")
+	@JsonIgnore
     private UserData userData; 
 	
 	
-	@ManyToMany(mappedBy = "products", fetch = FetchType.LAZY)
-    private List<Cart> carts;
+//	@ManyToMany(mappedBy = "products", fetch = FetchType.LAZY)
+//	 @JsonBackReference 
+//    private List<Cart> carts;
 	
 }

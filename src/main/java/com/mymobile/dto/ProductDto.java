@@ -11,10 +11,10 @@ import lombok.Data;
 
 @Data
 public class ProductDto {
-	
+
 	@NotEmpty
 	private String vendorId;
-	
+
 	@Size(min = 3, max = 35, message = "Username must be between 3 and 50 characters")
 	@Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$", message = "User ID must be alphanumeric and contain at least one letter and one digit.")
 	private String productId;
@@ -40,12 +40,9 @@ public class ProductDto {
 	@NotNull
 	private String model;
 
-//	@Lob 
-//	private byte[] imageOfProduct;
-	 private String imageOfProduct;
+	private String imageOfProduct;
 
 	@Size(min = 1, max = 10000)
 	private String productFeatures;
-	
 
 }
