@@ -1,12 +1,10 @@
 package com.mymobile.service;
 
-import com.mymobile.dto.CartResponseDto;
 import com.mymobile.entity.Cart;
 import com.mymobile.entity.CartIteam;
 import com.mymobile.entity.Product;
 import com.mymobile.entity.UserData;
 import com.mymobile.exception.BarcodeNotFoundException;
-import com.mymobile.exception.CartNotFoundException;
 import com.mymobile.exception.InvaildUserException;
 import com.mymobile.exception.InvalidCheckOutException;
 import com.mymobile.exception.ProductOutOfStockException;
@@ -23,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -57,14 +54,14 @@ public class CartService {
 
 		Optional<List<CartIteam>> existingItem = cartItemRepository.findByCartUserIdAndProductId(userId,
 				cartItem.getProductId());
-		
+
 		if (existingItem.isPresent()) {
-		    for (CartIteam item : existingItem.get()) {
-		        if (item.getStatus().equalsIgnoreCase("InPlace")) {
-		            item.setItemQuantity(cartItem.getItemQuantity());
-		            cartItemRepository.save(item);  // Save each updated item
-		        }
-		    }
+			for (CartIteam item : existingItem.get()) {
+				if (item.getStatus().equalsIgnoreCase("InPlace")) {
+					item.setItemQuantity(cartItem.getItemQuantity());
+					cartItemRepository.save(item); // Save each updated item
+				}
+			}
 		}
 
 //		if (existingItem.isPresent() && (existingItem.get().getStatus().equalsIgnoreCase("InPlace"))) {
@@ -76,22 +73,23 @@ public class CartService {
 		cartItem.setCart(cart);
 		return cartItemRepository.save(cartItem);
 	}
-	
+
 	@Transactional
 	public void removeFromCart(String userId, String productId) {
-	    // Find the list of items in the cart with the provided userId and productId
-	    Optional<List<CartIteam>> existingItems = cartItemRepository.findByCartUserIdAndProductId(userId, productId);
+		// Find the list of items in the cart with the provided userId and productId
+		Optional<List<CartIteam>> existingItems = cartItemRepository.findByCartUserIdAndProductId(userId, productId);
 
-	    // If no items are found or the list is empty, throw an exception
-	    if (!existingItems.isPresent() || existingItems.get().isEmpty()) {
-	        throw new RuntimeException("Cart item not found");
-	    }
+		// If no items are found or the list is empty, throw an exception
+		if (!existingItems.isPresent() || existingItems.get().isEmpty()) {
+			throw new RuntimeException("Cart item not found");
+		}
 
-	    // Iterate through the list of items (even though it's just one item in your case, handle multiple if needed)
-	    for (CartIteam item : existingItems.get()) {
-	        // Delete the item from the cart
-	        cartItemRepository.delete(item);
-	    }
+		// Iterate through the list of items (even though it's just one item in your
+		// case, handle multiple if needed)
+		for (CartIteam item : existingItems.get()) {
+			// Delete the item from the cart
+			cartItemRepository.delete(item);
+		}
 	}
 
 //	@Transactional
@@ -102,11 +100,10 @@ public class CartService {
 //
 //	}
 
-	public List<CartIteam> getCartItems(String userId) 
-	{
+	public List<CartIteam> getCartItems(String userId) {
 		List<CartIteam> byCartUserId = cartItemRepository.findByCartUserId(userId);
-		List<CartIteam> response = byCartUserId.stream().filter(cartIteam->cartIteam.getStatus()
-				.equalsIgnoreCase("InPlace")).collect(Collectors.toList());
+		List<CartIteam> response = byCartUserId.stream()
+				.filter(cartIteam -> cartIteam.getStatus().equalsIgnoreCase("InPlace")).collect(Collectors.toList());
 		return response;
 	}
 

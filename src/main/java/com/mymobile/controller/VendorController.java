@@ -1,7 +1,5 @@
 package com.mymobile.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.mymobile.dto.ProductAddedResponse;
 import com.mymobile.dto.ProductDto;
-import com.mymobile.dto.ProductsDto;
-import com.mymobile.dto.UserDataDto;
 import com.mymobile.service.VendorService;
 
 import jakarta.validation.Valid;
@@ -38,13 +34,10 @@ public class VendorController {
 		return new ResponseEntity<>(vendorService.getProductsList(vendorId), HttpStatus.OK);
 	}
 
-	
 	@DeleteMapping("/delete")
-	public ResponseEntity<Void> deleteProduct(@RequestParam String vendorId, @RequestParam String productId)
-	{
-		vendorService.productDelete(vendorId,productId);
+	public ResponseEntity<Void> deleteProduct(@RequestParam String vendorId, @RequestParam String productId) {
+		vendorService.productDelete(vendorId, productId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
-	
-	
+
 }

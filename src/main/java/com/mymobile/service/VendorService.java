@@ -13,7 +13,7 @@ import com.mymobile.dto.ProductDto;
 import com.mymobile.dto.ProductsDto;
 import com.mymobile.entity.Product;
 import com.mymobile.entity.UserData;
-import com.mymobile.exception.InvaildUserException;
+
 import com.mymobile.exception.InvaildUserToAddProductException;
 import com.mymobile.exception.ProductAlreadyExistsException;
 import com.mymobile.exception.ProductsNotFoundException;
@@ -74,10 +74,8 @@ public class VendorService {
 		} else {
 			List<Product> productListByVendoeId = productDao.findByUserData_UserId(vendorId);
 			if (productListByVendoeId.isEmpty()) {
-				String response = "No Products Found For Vendor : " + vendorId;
+				return "No Products Found For Vendor : " + vendorId;
 
-				return response;
-				// throw new InvaildUserException("Invalid user or no products included.");
 			}
 			return productListByVendoeId.stream().map(product -> mapper.map(product, ProductsDto.class))
 					.collect(Collectors.toList());
@@ -87,7 +85,7 @@ public class VendorService {
 
 	@Transactional
 	public void productDelete(String vendorId, String productId) {
-		UserData userData = userDetailsDao.findById(vendorId)
+		userDetailsDao.findById(vendorId)
 				.orElseThrow(() -> new UserNotFoundException("Vendor Not Found With Id : " + vendorId));
 
 		Product product = productDao.findByProductIdAndUserDataUserId(productId, vendorId);
